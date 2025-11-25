@@ -103,6 +103,11 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title mb-3">Movimientos</h5>
+        <form method="POST"
+      action="{{ url_for('eliminar_todos') }}"
+      onsubmit="return confirm('¿Seguro que quieres eliminar TODOS los registros?');">
+  <button class="btn btn-danger mb-3">Eliminar todos los registros</button>
+</form>
         {% if movimientos %}
           <div class="table-responsive">
             <table class="table table-striped align-middle">
@@ -153,3 +158,4 @@
   </div>
 </body>
 </html>
+

@@ -148,6 +148,11 @@ def manejar_categorias():
     categorias = Categoria.query.order_by(Categoria.nombre).all()
     return render_template("categorias.html", categorias=categorias, error=error)
 
+@app.route("/eliminar_todos", methods=["POST"])
+def eliminar_todos():
+    db.session.query(Movimiento).delete()
+    db.session.commit()
+    return redirect(url_for("index"))
 
 if __name__ == "__main__":
     with app.app_context():
