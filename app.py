@@ -70,25 +70,35 @@ def index():
         except ValueError:
             error = "El monto debe ser un número mayor a 0."
         else:
-            if tipo not in ("ahorro", "gasto"):
-                tipo = "gasto"
+#Revision
+            if tipo == "gasto":
+                _, _, saldo_actual = calcular_resumen()
+                if monto > saldo_actual:
+                    error = (
+                        f"No puedes gastar {monto} MXN, "
+                        f"tu saldo actual es de {saldo_actual} MXN."
+                    )
 
-            cat_obj = None
-            if tipo == "gasto" and categoria_id:
-                try:
-                    cat_obj = Categoria.query.get(int(categoria_id))
-                except ValueError:
-                    cat_obj = None
+            if error is None:
+                if tipo not in ("ahorro", "gasto"):
+                    tipo = "gasto"
 
-            mov = Movimiento(
-                tipo=tipo,
-                monto=monto,
-                nota=nota,
-                categoria=cat_obj
-            )
-            db.session.add(mov)
-            db.session.commit()
-            return redirect(url_for("index"))
+                cat_obj = None
+                if tipo == "gasto" and categoria_id:
+                    try:
+                        cat_obj = Categoria.query.get(int(categoria_id))
+                    except ValueError:
+                        cat_obj = None
+
+                mov = Movimiento(
+                    tipo=tipo,
+                    monto=monto,
+                    nota=nota,
+                    categoria=cat_obj
+                )
+                db.session.add(mov)
+                db.session.commit()
+                return redirect(url_for("index"))
 
     # GET
     movimientos = Movimiento.query.order_by(Movimiento.fecha.desc()).all()
@@ -104,7 +114,6 @@ def index():
         saldo=saldo,
         error=error
     )
-
 
 @app.route("/categorias", methods=["GET", "POST"])
 def manejar_categorias():
