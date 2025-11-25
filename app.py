@@ -1,20 +1,17 @@
-# app.py
+import os
+os.system ("cls")
+
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
 
-# Configuración de la base de datos (archivo SQLite local)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///finanzas.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
-
-# =======================
-# MODELOS
-# =======================
 
 class Categoria(db.Model):
     __tablename__ = "categorias"
@@ -40,10 +37,6 @@ class Movimiento(db.Model):
         return f"<Movimiento {self.tipo} {self.monto}>"
 
 
-# =======================
-# FUNCIONES AUXILIARES
-# =======================
-
 def calcular_resumen():
     total_ahorros = db.session.query(db.func.sum(Movimiento.monto))\
         .filter(Movimiento.tipo == "ahorro").scalar() or 0.0
@@ -55,9 +48,6 @@ def calcular_resumen():
     return float(total_ahorros), float(total_gastos), float(saldo)
 
 
-# =======================
-# RUTAS
-# =======================
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -69,7 +59,7 @@ def index():
         nota = request.form.get("nota", "").strip()
         categoria_id = request.form.get("categoria_id")
 
-        # Validación de monto
+        # Validación de dinero
         try:
             monto = float(monto_str)
             if monto <= 0:
@@ -97,7 +87,7 @@ def index():
             db.session.commit()
             return redirect(url_for("index"))
 
-    # GET o POST con error
+    # GET
     movimientos = Movimiento.query.order_by(Movimiento.fecha.desc()).all()
     categorias = Categoria.query.order_by(Categoria.nombre).all()
     total_ahorros, total_gastos, saldo = calcular_resumen()
@@ -134,12 +124,11 @@ def manejar_categorias():
                 db.session.commit()
                 return redirect(url_for("manejar_categorias"))
 
-    # Para eliminar categoría (simple, vía query string ?eliminar=id)
     eliminar_id = request.args.get("eliminar")
     if eliminar_id:
         cat = Categoria.query.get(eliminar_id)
         if cat:
-            # Opcional: podrías impedir borrar si tiene movimientos
+    
             db.session.delete(cat)
             db.session.commit()
             return redirect(url_for("manejar_categorias"))
@@ -148,11 +137,7 @@ def manejar_categorias():
     return render_template("categorias.html", categorias=categorias, error=error)
 
 
-# =======================
-# PUNTO DE ENTRADA
-# =======================
-
 if __name__ == "__main__":
     with app.app_context():
-        db.create_all()  # Crea tablas si no existen
+        db.create_all() 
     app.run(debug=True)
