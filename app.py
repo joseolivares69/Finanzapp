@@ -48,7 +48,11 @@ def calcular_resumen():
 
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
+def lobby():
+    return render_template("lobby.html")
+
+@app.route("/finanzas", methods=["GET", "POST"])
 def index():
     error = None
 

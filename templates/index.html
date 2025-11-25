@@ -11,12 +11,18 @@
 <body class="bg-light">
   <div class="container py-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-      <h1 class="mb-0">Finanzas personales</h1>
-      <a href="{{ url_for('manejar_categorias') }}" class="btn btn-outline-secondary">
-        🏷️ Categorías
-      </a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h1 class="mb-0">💰 Finanzas personales</h1>
+  <div class="btn-group">
+    <a href="{{ url_for('manejar_categorias') }}" class="btn btn-outline-secondary">
+      🏷️ Categorías
+    </a>
+    <a href="{{ url_for('lobby') }}" class="btn btn-outline-primary">
+      🏠 Lobby
+    </a>
+  </div>
+</div>
+
 
     <!-- Resumen -->
     <div class="row mb-4">
