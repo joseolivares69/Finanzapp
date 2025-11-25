@@ -47,8 +47,11 @@ def calcular_resumen():
     return float(total_ahorros), float(total_gastos), float(saldo)
 
 
+@app.route("/")
+def lobby():
+    return render_template("lobby.html")
+@app.route("/finanzas", methods=["GET", "POST"])
 
-@app.route("/", methods=["GET", "POST"])
 def index():
     error = None
 
